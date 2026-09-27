@@ -10,22 +10,19 @@ GDRIVE_FILE_ID = "1Wo0GKJkAMkc0gIIUgLupNYXN5aqr2lcq"
 MODEL_PATH = "best_efficientnetb7_model.h5"
 
 
-# 2. Hàm tự động tải mô hình từ Drive nếu chưa có trên server
+# 2. Tự động tải mô hình từ Drive nếu chưa có
 @st.cache_resource
 def load_my_model():
   if not os.path.exists(MODEL_PATH):
-    with st.spinner(
-        "⏳ Đang tải mô hình AI từ Google Drive (chỉ mất 1-2 phút lần đầu tiên)..."
-    ):
+    with st.spinner("⏳ Đang tải mô hình AI từ Google Drive..."):
       url = f"https://drive.google.com/uc?id={GDRIVE_FILE_ID}"
       gdown.download(url, MODEL_PATH, quiet=False)
   return tf.keras.models.load_model(MODEL_PATH)
 
 
-# Nạp mô hình
 model = load_my_model()
 
-# 3. Danh sách loài sinh vật biển
+# 3. Danh sách 20 loài sinh vật biển
 CLASS_NAMES = [
     'Clams',
     'Corals',
@@ -71,9 +68,14 @@ if uploaded_file is not None:
     predictions = model.predict(img_array)[0]
     top_indices = np.argsort(predictions)[-3:][::-1]
 
+    # --- ĐOẠN ĐÃ ĐƯỢC SỬA LỖI INDEXERROR ---
     st.subheader('📊 Kết quả dự đoán hàng đầu:')
     for idx in top_indices:
-      class_name = CLASS_NAMES[idx]
+      if idx < len(CLASS_NAMES):
+        class_name = CLASS_NAMES[idx]
+      else:
+        class_name = f'Loài #{idx}'  # Tên dự phòng nếu chỉ số vượt quá 20
+
       confidence = float(predictions[idx] * 100)
       st.write(f'**{class_name}**: {confidence:.2f}%')
-      st.progress(int(confidence))
+      st.progress(min(int(confidence), 100))
