@@ -82,10 +82,11 @@ if uploaded_file is not None:
     # Hiển thị kết quả
     st.subheader('📊 Kết quả dự đoán hàng đầu:')
     for idx in top_indices:
+      # Nếu chỉ số thuộc 20 loài đã khai báo thì hiện tên, ngược lại ghi "Loài chưa ghi nhận"
       if idx < len(CLASS_NAMES):
         class_name = CLASS_NAMES[idx]
       else:
-        class_name = f'Loài #{idx}'  # Tên dự phòng an toàn
+        class_name = 'Loài chưa ghi nhận'
 
       confidence = float(predictions[idx] * 100)
       st.write(f'**{class_name}**: {confidence:.2f}%')
