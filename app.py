@@ -57,7 +57,7 @@ CLASS_NAMES = [
 # 5. Giao diện chính của Web
 st.title('🌊 AI Phân Loại Sinh Vật Biển')
 st.write(
-    'Tải lên một bức ảnh sinh vật biển để mô hình EfficientNetB7 nhận diện!'
+    'Tải lên một bức ảnh sinh vật biển để mô hình nhận diện!'
 )
 
 uploaded_file = st.file_uploader(
